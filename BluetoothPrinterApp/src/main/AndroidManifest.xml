@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.brightyu.printer">
+
+    <application
+        android:name="com.brightyu.printer.BaseApplication"
+        android:allowBackup="true"
+        android:icon="${APP_ICON}"
+        android:label="${APP_NAME}"
+        android:theme="@style/AppTheme">
+
+        <!--引导界面-->
+        <activity
+            android:name="com.brightyu.printer.modules.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 引导页-->
+        <activity
+            android:name="com.brightyu.printer.modules.GuideActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Guide" />
+        <!--主界面-->
+        <activity
+            android:name="com.brightyu.printer.modules.main.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.brightyu.printer.modules.OnlyWebActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.bright.common.app.activity.SelectorPicturesActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoActionBar" />
+
+        <activity
+            android:name="com.bright.common.app.activity.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.NoActionBar.Fullscreen" />
+
+
+        <!-- ++++++++++++++++++++配置区域+++++++++++++++++-->
+        <!--百度统计的id-->
+        <meta-data
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="${BAIDU_STATISTICS_ID}" />
+        <!-- 百度统计的id 渠道商编号 -->
+        <meta-data
+            android:name="BaiduMobAd_CHANNEL"
+            android:value="${BAIDU_STATISTICS_CHANNEL}" />
+        <!-- 百度统计 是否开启错误日志统计，默认为false -->
+        <meta-data
+            android:name="BaiduMobAd_EXCEPTION_LOG"
+            android:value="true" />
+    </application>
+
+</manifest>

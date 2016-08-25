@@ -1,0 +1,5 @@
+<resources>
+    <!--密码长度验证 -->
+    <integer name="min_password">6</integer>
+    <integer name="max_password">16</integer>
+</resources>
