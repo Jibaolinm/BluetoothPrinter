@@ -28,7 +28,7 @@ import android.view.WindowManager;
 import com.bright.common.constant.Shift;
 import com.brightyu.printer.constant.Configure;
 import com.brightyu.printer.modules.base.AppBaseActivity;
-import com.brightyu.printer.modules.main.MainActivity;
+import com.brightyu.printer.modules.printer.list.PrinterListActivity;
 
 /**
  * 引导界面
@@ -90,9 +90,9 @@ public class SplashActivity extends AppBaseActivity {
                 case HANDLE_GO_NEXT:
                     Intent intent;
                     if (isFirstEnterThisVerison()) {
-                        intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent = new Intent(SplashActivity.this, PrinterListActivity.class);
                     } else {
-                        intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent = new Intent(SplashActivity.this, PrinterListActivity.class);
                     }
                     startActivity(intent);
                     finish();

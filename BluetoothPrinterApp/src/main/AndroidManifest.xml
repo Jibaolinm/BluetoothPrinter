@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.brightyu.printer">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:name="com.brightyu.printer.BaseApplication"
         android:allowBackup="true"
@@ -20,14 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- 引导页-->
-        <activity
-            android:name="com.brightyu.printer.modules.GuideActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Guide" />
+
         <!--主界面-->
         <activity
-            android:name="com.brightyu.printer.modules.main.MainActivity"
+            android:name=".modules.printer.list.PrinterListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 

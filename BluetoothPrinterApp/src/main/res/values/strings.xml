@@ -33,10 +33,14 @@
     <string name="register_please_input_verify_code">请输入验证码</string>
     <string name="register_please_input_right_ensure_password">两次输入密码不一致</string>
     <string name="login_please_input_ensure_password">请输入确认密码</string>
-    
+
     <string name="forgot_password_title">忘记密码</string>
     <string name="forgot_password_tip_password">新密码：</string>
     <string name="main_select_printer">选择设备</string>
     <string name="search">搜索</string>
+    <string name="searching">搜索中&#8230;</string>
+    <string name="click_again_to_exit">再次点击退出应用程序</string>
+    <string name="please_open_bt">请打开蓝牙</string>
+    <string name="open">打开</string>
 
 </resources>
