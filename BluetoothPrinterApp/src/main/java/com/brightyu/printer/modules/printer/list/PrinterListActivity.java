@@ -100,6 +100,7 @@ public class PrinterListActivity extends AppBaseActivity implements PrinterListC
     public void showSearching(boolean show) {
         AnimationDrawable animation = (AnimationDrawable) mWifiImageStatus.getDrawable();
         if (show) {
+            mAdapter.clear();
             mWifiTextStatus.setText(R.string.searching);
             mWifiTextStatus.setClickable(false);
             animation.start();

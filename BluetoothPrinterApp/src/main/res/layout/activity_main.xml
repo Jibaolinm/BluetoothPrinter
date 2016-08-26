@@ -19,7 +19,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/windows_background_light">
+        android:background="@drawable/bottom_line_normal_bg">
 
         <ImageView
             android:id="@+id/wifi_status"
