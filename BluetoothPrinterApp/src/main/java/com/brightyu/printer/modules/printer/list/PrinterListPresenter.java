@@ -28,6 +28,10 @@ import android.util.Log;
 
 import com.brightyu.printer.modules.base.AppBaseActivity;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Set;
+
 /**
  * 打印机列表
  */
@@ -47,12 +51,12 @@ public class PrinterListPresenter implements PrinterListContract.Presenter {
     @Override
     public void checkBluetooth() {
         if (!mBluetoothAdapter.isEnabled()) {
-            openBluetook();
+            openBluetooth();
         }
     }
 
     @Override
-    public void openBluetook() {
+    public void openBluetooth() {
         Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         mContext.startActivityForResult(intent, PrinterListActivity.REQUEST_BT_STATUS);
     }
@@ -69,12 +73,24 @@ public class PrinterListPresenter implements PrinterListContract.Presenter {
 
     @Override
     public void connect(BluetoothDevice device) {
+        try {
+            Method method = BluetoothDevice.class.getMethod("createBond");
+            method.invoke(device);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
+
     @Override
     public void disConnect(BluetoothDevice device) {
-
+        try {
+            Method method = BluetoothDevice.class.getMethod("removeBond");
+            method.invoke(device);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -89,7 +105,6 @@ public class PrinterListPresenter implements PrinterListContract.Presenter {
 
     @Override
     public void start() {
-        Log.i(TAG, "start: ");
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -97,30 +112,54 @@ public class PrinterListPresenter implements PrinterListContract.Presenter {
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         // 注册广播接收器，接收并处理搜索结果
         mContext.registerReceiver(mBroadcastReceiver, intentFilter);
+        Set<BluetoothDevice> deviceSet = mBluetoothAdapter.getBondedDevices();
+        mView.addBluetoothDevice(new ArrayList<>(deviceSet));
     }
+
 
     @Override
     public void stop() {
-        Log.i(TAG, "start: ");
         mContext.unregisterReceiver(mBroadcastReceiver);
     }
+
+    @Override
+    public void destroy() {
+        mContext = null;
+    }
+
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            int beforStatus;
             int status;
+            BluetoothDevice device;
             Log.i(TAG, "onReceive: action = " + action);
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Log.i(TAG, "onReceive: device = " + device.getBluetoothClass().getMajorDeviceClass());
+                device.getBondState();
                 mView.addBluetoothDevice(device);
             } else if (TextUtils.equals(BluetoothAdapter.ACTION_STATE_CHANGED, action)) {
                 status = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_ON);
-                Log.i(TAG, "onReceive: status - " + status);
+                beforStatus = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_STATE, BluetoothAdapter.STATE_ON);
+                if (beforStatus == BluetoothAdapter.STATE_TURNING_OFF && status == BluetoothAdapter.STATE_OFF) {
+                    checkBluetooth();
+                }
             } else if (TextUtils.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED, action)) {
                 mView.showSearching(false);
+            } else if (TextUtils.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED, action)) {
+                mView.updateBluetoothDeviceStatus();
+                beforStatus = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.BOND_NONE);
+                status = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE);
+                if (beforStatus == BluetoothDevice.BOND_BONDING && status == BluetoothDevice.BOND_BONDED) {
+                    device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    mView.goPrint(device);
+                }
             }
         }
     };
+
 
 }

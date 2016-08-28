@@ -42,5 +42,10 @@
     <string name="click_again_to_exit">再次点击退出应用程序</string>
     <string name="please_open_bt">请打开蓝牙</string>
     <string name="open">打开</string>
+    <string name="unknown_device">未知设备</string>
+    <string name="bt_bonded">已配对</string>
+    <string name="bt_bonding">配对中...</string>
+    <string name="bt_unbond">未配对</string>
+    <string name="printer_detail_title">打印</string>
 
 </resources>

@@ -20,7 +20,9 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,8 +31,11 @@ import com.bright.common.widget.TopBar;
 import com.bright.common.widget.YToast;
 import com.brightyu.printer.R;
 import com.brightyu.printer.modules.base.AppBaseActivity;
+import com.brightyu.printer.modules.printer.detail.PrinterDetailActivity;
 
-public class PrinterListActivity extends AppBaseActivity implements PrinterListContract.View, View.OnClickListener {
+import java.util.List;
+
+public class PrinterListActivity extends AppBaseActivity implements PrinterListContract.View, View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "PrinterListActivity";
     public static final int REQUEST_BT_STATUS = 1;
     private PrinterListContract.Presenter mPresenter;
@@ -60,6 +65,7 @@ public class PrinterListActivity extends AppBaseActivity implements PrinterListC
         mAdapter = new PrinterListAdapter(this);
 
         ListView listView = (ListView) findViewById(R.id.list);
+        listView.setOnItemClickListener(this);
         listView.setAdapter(mAdapter);
     }
 
@@ -117,11 +123,39 @@ public class PrinterListActivity extends AppBaseActivity implements PrinterListC
     }
 
     @Override
+    public void addBluetoothDevice(List<BluetoothDevice> devices) {
+        mAdapter.plusData(devices);
+    }
+
+    @Override
+    public void updateBluetoothDeviceStatus() {
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void goPrint(BluetoothDevice device) {
+        Intent intent = new Intent(this, PrinterDetailActivity.class);
+        intent.putExtra(PrinterDetailActivity.KEY_DEVICE, device);
+        startActivity(intent);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.search:
                 mPresenter.searchDevice();
                 break;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.i(TAG, "onItemClick: ");
+        BluetoothDevice device = mAdapter.getItem(position);
+        if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
+            goPrint(device);
+        } else {
+            mPresenter.connect(device);
         }
     }
 }

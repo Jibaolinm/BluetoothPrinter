@@ -26,10 +26,14 @@
             </intent-filter>
         </activity>
 
-        <!--主界面-->
+        <!--打印机列表界面-->
         <activity
             android:name=".modules.printer.list.PrinterListActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <!--打印机详情界面界面-->
+        <activity
+            android:name=".modules.printer.detail.PrinterDetailActivity"
             android:screenOrientation="portrait" />
 
         <activity
