@@ -47,5 +47,6 @@
     <string name="bt_bonding">配对中...</string>
     <string name="bt_unbond">未配对</string>
     <string name="printer_detail_title">打印</string>
+    <string name="please_open_local_permission">请打开[位置信息]权限,否则将无法获取蓝牙列表</string>
 
 </resources>

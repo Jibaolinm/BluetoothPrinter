@@ -87,6 +87,7 @@ android {
     buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
+
         // 注意这里只是设置了appid的前缀 在buildTypes里面有设置后缀
         applicationId APPLICATION_ID
         minSdkVersion MIN_SDK_VERSION as int

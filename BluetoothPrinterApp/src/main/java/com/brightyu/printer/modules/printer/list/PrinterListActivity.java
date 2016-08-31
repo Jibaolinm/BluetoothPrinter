@@ -16,10 +16,16 @@
 
 package com.brightyu.printer.modules.printer.list;
 
+import android.Manifest;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +35,7 @@ import android.widget.TextView;
 
 import com.bright.common.widget.TopBar;
 import com.bright.common.widget.YToast;
+import com.bright.common.widget.dialog.BaseDialog;
 import com.brightyu.printer.R;
 import com.brightyu.printer.modules.base.AppBaseActivity;
 import com.brightyu.printer.modules.printer.detail.PrinterDetailActivity;
@@ -37,7 +44,14 @@ import java.util.List;
 
 public class PrinterListActivity extends AppBaseActivity implements PrinterListContract.View, View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "PrinterListActivity";
+    /**
+     * 蓝牙状态回调
+     */
     public static final int REQUEST_BT_STATUS = 1;
+    /**
+     * 请求蓝牙权限
+     */
+    public static final int REQUEST_PERMISSION_BT = 2;
     private PrinterListContract.Presenter mPresenter;
     private PrinterListAdapter mAdapter;
     private ImageView mWifiImageStatus;
@@ -47,6 +61,7 @@ public class PrinterListActivity extends AppBaseActivity implements PrinterListC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkPermission();
         setContentView(R.layout.activity_main);
         mPresenter = new PrinterListPresenter(this, this);
         mPresenter.start();
@@ -156,6 +171,47 @@ public class PrinterListActivity extends AppBaseActivity implements PrinterListC
             goPrint(device);
         } else {
             mPresenter.connect(device);
+        }
+    }
+
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                // 提示权限已经被禁用 且不在提示
+                dialog(R.string.please_open_local_permission);
+                return;
+            }
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_BT);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_PERMISSION_BT:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // TODO 请求权限成功
+                } else {
+                    // 提示权限已经被禁用
+                    dialog(R.string.please_open_local_permission);
+                    BaseDialog dialog = new BaseDialog.Builder(PrinterListActivity.this)
+                            .setMessage(R.string.please_open_local_permission)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ActivityCompat.requestPermissions(PrinterListActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_PERMISSION_BT);
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, null)
+                            .create();
+                    dialog.show();
+
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
